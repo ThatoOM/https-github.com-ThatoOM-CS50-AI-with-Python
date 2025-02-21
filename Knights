@@ -1,0 +1,69 @@
+AKnight = Symbol("A is a Knight")
+AKnave = Symbol("A is a Knave")
+
+knowledge0 = And(
+Or(AKnight, AKnave), # A is either a knight or a knave
+Not(And(AKnight, AKnave)), # A cannot be both a knight and a knave
+Biconditional(AKnight, And(AKnight, AKnave)) # A says "I am both a knight and a knave"
+)# Puzzle 1
+AKnight = Symbol("A is a Knight")
+AKnave = Symbol("A is a Knave")
+BKnight = Symbol("B is a Knight")
+BKnave = Symbol("B is a Knave")
+
+knowledge1 = And(
+Or(AKnight, AKnave), # A is either a knight or a knave
+Or(BKnight, BKnave), # B is either a knight or a knave
+Not(And(AKnight, AKnave)), # A cannot be both a knight and a knave
+Not(And(BKnight, BKnave)), # B cannot be both a knight and a knave
+Biconditional(AKnight, And(AKnave, BKnave)) # A says "We are both knaves"
+)# Puzzle 2
+AKnight = Symbol("A is a Knight")
+AKnave = Symbol("A is a Knave")
+BKnight = Symbol("B is a Knight")
+BKnave = Symbol("B is a Knave")
+
+knowledge2 = And(
+Or(AKnight, AKnave), # A is either a knight or a knave
+Or(BKnight, BKnave), # B is either a knight or a knave
+Not(And(AKnight, AKnave)), # A cannot be both a knight and a knave
+Not(And(BKnight, BKnave)), # B cannot be both a knight and a knave
+Biconditional(AKnight, Biconditional(AKnight, BKnight)), # A says "We are the same kind"
+Biconditional(BKnight, Not(Biconditional(AKnight, BKnight))) # B says "We are of different kinds"
+)# Puzzle 2
+AKnight = Symbol("A is a Knight")
+AKnave = Symbol("A is a Knave")
+BKnight = Symbol("B is a Knight")
+BKnave = Symbol("B is a Knave")
+
+knowledge2 = And(
+Or(AKnight, AKnave), # A is either a knight or a knave
+Or(BKnight, BKnave), # B is either a knight or a knave
+Not(And(AKnight, AKnave)), # A cannot be both a knight and a knave
+Not(And(BKnight, BKnave)), # B cannot be both a knight and a knave
+Biconditional(AKnight, Biconditional(AKnight, BKnight)), # A says "We are the same kind"
+Biconditional(BKnight, Not(Biconditional(AKnight, BKnight))) # B says "We are of different kinds"
+)# Puzzle 3
+AKnight = Symbol("A is a Knight")
+AKnave = Symbol("A is a Knave")
+BKnight = Symbol("B is a Knight")
+BKnave = Symbol("B is a Knave")
+CKnight = Symbol("C is a Knight")
+CKnave = Symbol("C is a Knave")
+
+knowledge3 = And(
+Or(AKnight, AKnave), # A is either a knight or a knave
+Or(BKnight, BKnave), # B is either a knight or a knave
+Or(CKnight, CKnave), # C is either a knight or a knave
+Not(And(AKnight, AKnave)), # A cannot be both a knight and a knave
+Not(And(BKnight, BKnave)), # B cannot be both a knight and a knave
+Not(And(CKnight, CKnave)), # C cannot be both a knight and a knave
+Biconditional(AKnight, AKnight), # A says "I am a knight."
+Biconditional(AKnave, AKnave), # A says "I am a knave."
+Biconditional(BKnight, Biconditional(AKnave, AKnave)), # B says "A said 'I am a knave.'"
+Biconditional(BKnight, CKnave), # B says "C is a knave."
+Biconditional(CKnight, AKnight) # C says "A is a knight."
+)
+python puzzle.py
+
+Activity
