@@ -1,0 +1,57 @@
+for person in people:
+    genes = (
+        2 if person in two_genes else
+        1 if person in one_gene else
+        0
+    )
+    trait = person in have_trait
+
+    if people[person]["mother"] is None:
+        probability *= PROBS["gene"][genes]
+    else:
+        mother = people[person]["mother"]
+        father = people[person]["father"]
+        passing_probs = {}
+
+        for parent in [mother, father]:
+            if parent in two_genes:
+                passing_probs[parent] = 1 - PROBS["mutation"]
+            elif parent in one_gene:
+                passing_probs[parent] = 0.5
+            else:
+                passing_probs[parent] = PROBS["mutation"]
+
+        if genes == 2:
+            probability *= passing_probs[mother] * passing_probs[father]
+        elif genes == 1:
+            probability *= (
+                passing_probs[mother] * (1 - passing_probs[father]) +
+                (1 - passing_probs[mother]) * passing_probs[father]
+            )
+        else:
+            probability *= (1 - passing_probs[mother]) * (1 - passing_probs[father])
+
+    probability *= PROBS["trait"][genes][trait]
+
+return probability
+def update(probabilities, one_gene, two_genes, have_trait, p):
+for person in probabilities:
+genes = (
+2 if person in two_genes else
+1 if person in one_gene else
+0
+)
+trait = person in have_trait
+
+    probabilities[person]["gene"][genes] += p
+    probabilities[person]["trait"][trait] += p
+def normalize(probabilities):
+for person in probabilities:
+gene_total = sum(probabilities[person]["gene"].values())
+trait_total = sum(probabilities[person]["trait"].values())
+
+    for gene in probabilities[person]["gene"]:
+        probabilities[person]["gene"][gene] /= gene_total
+
+    for trait in probabilities[person]["trait"]:
+        probabilities[person]["trait"][trait] /= trait_total
