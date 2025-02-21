@@ -1,0 +1,100 @@
+def get_q_value(self, state, action):
+return self.q.get((tuple(state), action), 0.0)
+def update_q_value(self, state, action, old_q, reward, future_rewards):
+new_value_estimate = reward + self.discount * future_rewards
+self.q[(tuple(state), action)] = old_q + self.alpha * (new_value_estimate - old_q)
+def update_q_value(self, state, action, old_q, reward, future_rewards):
+new_value_estimate = reward + self.discount * future_rewards
+self.q[(tuple(state), action)] = old_q + self.alpha * (new_value_estimate - old_q)
+def best_future_reward(self, state):
+possible_actions = Nim(state).available_actions()
+if not possible_actions:
+return 0
+return max(self.get_q_value(state, action) for action in possible_actions)
+def choose_action(self, state, epsilon=True):
+possible_actions = Nim(state).available_actions()
+if not possible_actions:
+return None
+
+if epsilon and random.random() < self.epsilon:
+    return random.choice(possible_actions)
+else:
+    q_values = {action: self.get_q_value(state, action) for action in possible_actions}
+    max_q = max(q_values.values())
+    best_actions = [action for action, q in q_values.items() if q == max_q]
+    return random.choice(best_actions)
+import random
+
+class NimAI:
+def init(self, alpha=0.5, epsilon=0.1, discount=0.9):
+self.q = {}
+self.alpha = alpha
+self.epsilon = epsilon
+self.discount = discount
+
+def get_q_value(self, state, action):
+    return self.q.get((tuple(state), action), 0.0)
+
+def update_q_value(self, state, action, old_q, reward, future_rewards):
+    new_value_estimate = reward + self.discount * future_rewards
+    self.q[(tuple(state), action)] = old_q + self.alpha * (new_value_estimate - old_q)
+
+def best_future_reward(self, state):
+    possible_actions = Nim(state).available_actions()
+    if not possible_actions:
+        return 0
+    return max(self.get_q_value(state, action) for action in possible_actions)
+
+def choose_action(self, state, epsilon=True):
+    possible_actions = Nim(state).available_actions()
+    if not possible_actions:
+        return None
+
+    if epsilon and random.random() < self.epsilon:
+        return random.choice(possible_actions)
+    else:
+        q_values = {action: self.get_q_value(state, action) for action in possible_actions}
+        max_q = max(q_values.values())
+        best_actions = [action for action, q in q_values.items() if q == max_q]
+        return random.choice(best_actions)
+def train(agent, games=10000):
+for game in range(games):
+nim = Nim([1, 3, 5, 7])
+last_state = None
+last_action = None
+
+    while not nim.is_game_over():
+        state = nim.piles.copy()
+        action = agent.choose_action(state)
+        nim.move(action)
+        reward = -1 if nim.is_game_over() else 0
+
+        if last_state is not None:
+            agent.update_q_value(last_state, last_action, agent.get_q_value(last_state, last_action), reward, agent.best_future_reward(state))
+
+        last_state = state
+        last_action = action
+
+    agent.update_q_value(last_state, last_action, agent.get_q_value(last_state, last_action), 1, 0)
+agent = NimAI()
+train(agent)
+
+def play():
+nim = Nim([1, 3, 5, 7])
+while not nim.is_game_over():
+print(f"Piles: {nim.piles}")
+action = agent.choose_action(nim.piles, epsilon=False)
+print(f"AI chose to take {action[1]} from pile {action[0]}.")
+nim.move(action)
+if nim.is_game_over():
+print("AI wins!")
+break
+
+    print(f"Piles: {nim.piles}")
+    pile = int(input("Choose a pile: "))
+    count = int(input("Choose how many to take: "))
+    nim.move((pile, count))
+    if nim.is_game_over():
+        print("You win!")
+        break
+play()
