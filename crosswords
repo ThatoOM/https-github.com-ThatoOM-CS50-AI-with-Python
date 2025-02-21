@@ -1,0 +1,60 @@
+def enforce_node_consistency(self):
+for variable in self.domains:
+for word in set(self.domains[variable]):
+if len(word) != variable.length:
+self.domains[variable].remove(word)
+def revise(self, x, y):
+revised = False
+overlap = self.crossword.overlaps[x, y]
+if overlap:
+i, j = overlap
+for word_x in set(self.domains[x]):
+if not any(word_x[i] == word_y[j] for word_y in self.domains[y]):
+self.domains[x].remove(word_x)
+revised = True
+return revised
+def ac3(self, arcs=None):
+if arcs is None:
+arcs = [(x, y) for x in self.domains for y in self.crossword.neighbors(x)]
+queue = list(arcs)
+
+while queue:
+    (x, y) = queue.pop(0)
+    if self.revise(x, y):
+        if not self.domains[x]:
+            return False
+        for z in self.crossword.neighbors(x) - {y}:
+            queue.append((z, x))
+return True
+def assignment_complete(self, assignment):
+return set(assignment.keys()) == set(self.crossword.variables)
+def consistent(self, assignment):
+for variable, word in assignment.items():
+if variable.length != len(word):
+return False
+for neighbor in self.crossword.neighbors(variable):
+if neighbor in assignment:
+i, j = self.crossword.overlaps[variable, neighbor]
+if word[i] != assignment[neighbor][j]:
+return False
+return len(set(assignment.values())) == len(assignment.values())
+def order_domain_values(self, var, assignment):
+return sorted(self.domains[var], key=lambda val: self.conflicts(var, val, assignment))
+
+def select_unassigned_variable(self, assignment):
+unassigned = [v for v in self.crossword.variables if v not in assignment]
+return min(unassigned, key=lambda var: len(self.domains[var]))
+def backtrack(self, assignment):
+if self.assignment_complete(assignment):
+return assignment
+
+var = self.select_unassigned_variable(assignment)
+for value in self.order_domain_values(var, assignment):
+    new_assignment = assignment.copy()
+    new_assignment[var] = value
+    if self.consistent(new_assignment):
+        result = self.backtrack(new_assignment)
+        if result is not None:
+            return result
+return None
+Activity
