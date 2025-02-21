@@ -1,0 +1,42 @@
+pip install nltk
+import nltk
+from nltk import CFG
+
+TERMINALS = """
+Adj -> "big" | "small" | "red" | "blue"
+Adv -> "quickly" | "slowly"
+Conj -> "and" | "or"
+Det -> "a" | "an" | "the" | "my"
+N -> "dog" | "cat" | "man" | "telescope" | "park"
+P -> "in" | "on" | "by" | "with"
+V -> "saw" | "walked"
+"""
+def np_chunk(tree):
+return [subtree for subtree in tree.subtrees(lambda t: t.label() == 'NP' and not any(c.label() == 'NP' for c in t))]
+def main():
+sentence = input("Sentence: ")
+words = preprocess(sentence)
+trees = list(parser.parse(words))
+
+for tree in trees:
+    tree.pretty_print()
+    print("Noun Phrase Chunks")
+    for np in np_chunk(tree):
+        print(" ".join(np.flatten()))
+if name == "main":
+main()
+
+NONTERMINALS = """
+S -> NP VP
+NP -> Det N | Det Adj N | NP PP
+VP -> V NP | V PP | V Adv
+PP -> P NP
+"""
+
+grammar = CFG.fromstring(NONTERMINALS + TERMINALS)
+parser = nltk.ChartParser(grammar)
+from nltk.tokenize import word_tokenize
+
+def preprocess(sentence):
+words = word_tokenize(sentence.lower())
+return [word for word in words if any(c.isalpha() for c in word)]
