@@ -1,0 +1,99 @@
+To implement an AI that plays Tic-Tac-Toe optimally, use the Minimax algorithm. This strategy simulates all possible moves in the game to determine the best move at each turn
+pygame window
+Game Over: O wins.
+O
+X
+XOO
+X|X|O
+EMPTY = None
+X = "X"
+O = "O"
+
+def initial_state():
+return [[EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY],
+[EMPTY, EMPTY, EMPTY]]
+def winner(board):
+# Check rows, columns, and diagonals for a winner
+for row in board:
+if row[0] == row[1] == row[2] and row[0] is not None:
+return row[0]
+for col in range(3):
+if board[0][col] == board[1][col] == board[2][col] and board[0][col] is not None:
+return board[0][col]
+if board[0][0] == board[1][1] == board[2][2] and board[0][0] is not None:
+return board[0][0]
+if board[0][2] == board[1][1] == board[2][0] and board[0][2] is not None:
+return board[0][2]
+return None
+
+def empty_cells(board):
+cells = []
+for x, row in enumerate(board):
+for y, cell in enumerate(row):
+if cell is EMPTY:
+cells.append((x, y))
+return cells
+def minimax(board, depth, is_maximizing):
+if winner(board) == X:
+return 10 - depth
+if winner(board) == O:
+return depth - 10
+if not empty_cells(board):
+return 0
+
+if is_maximizing:
+    best_score = -float('inf')
+    for (x, y) in empty_cells(board):
+        board[x][y] = X
+        score = minimax(board, depth + 1, False)
+        board[x][y] = EMPTY
+        best_score = max(score, best_score)
+    return best_score
+else:
+    best_score = float('inf')
+    for (x, y) in empty_cells(board):
+        board[x][y] = O
+        score = minimax(board, depth + 1, True)
+        board[x][y] = EMPTY
+        best_score = min(score, best_score)
+    return best_score
+def best_move(board):
+best_score = -float('inf')
+move = None
+for (x, y) in empty_cells(board):
+board[x][y] = X
+score = minimax(board, 0, False)
+board[x][y] = EMPTY
+if score > best_score:
+best_score = score
+move = (x, y)
+return move
+def play_game():
+board = initial_state()
+while True:
+print_board(board)
+if winner(board) or not empty_cells(board):
+break
+if current_player(board) == X:
+x, y = best_move(board)
+board[x][y] = X
+else:
+x, y = map(int, input("Enter your move (row col): ").split())
+if board[x][y] is EMPTY:
+board[x][y] = O
+
+def print_board(board):
+for row in board:
+print(" | ".join([cell if cell is not None else " " for cell in row]))
+print("-" * 5)
+
+def current_player(board):
+x_count = sum(row.count(X) for row in board)
+o_count = sum(row.count(O) for row in board)
+return X if x_count <= o_count else O
+
+if name == "main":
+play_game()
+
+Activity
